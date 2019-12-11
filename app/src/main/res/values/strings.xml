@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">TrendNews</string>
+
+    <string name="apiKey">18434d8a06324694abbfb28c794292d1</string>
+    <string name="urlBase">https://newsapi.org/v2/</string>
+
+
+    <string name="email">Ingrese email</string>
+    <string name="password">password</string>
+    <string name="login">Login now</string>
+    <string name="register">Registrarse como Usuario Nuevo</string>
+    <string name="face">Registrarse con Facebook</string>
+    <string name="usuario">Ingresa un Usuario</string>
+    <string name="pass">Ingresa un password</string>
+    <string name="cpassword">Confirma tu password</string>
+    <string name="registrar">Register now</string>
+
+    <string name="search">Buscar</string>
+    <string name="settings">Config.</string>
+    <string name="close">Cerrar Sesion</string>
+    <string name="top">Top HeadLines</string>
+
+
+</resources>

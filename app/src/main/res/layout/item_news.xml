@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardElevation="@dimen/cardview_default_elevation"
+        app:cardCornerRadius="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageNew"
+                android:transitionName="imagen"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                tools:ignore = "UnusedAttribute"/>
+
+            <ImageView
+                android:id="@+id/bottom"
+                android:src="@drawable/shadow"
+                android:layout_alignBottom="@id/imageNew"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"/>
+
+            <androidx.core.widget.ContentLoadingProgressBar
+                android:id="@+id/progress"
+                android:layout_marginTop="70dp"
+                style="@android:style/Widget.Material.ProgressBar.Small"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/author"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:drawablePadding="10dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/loginDetails"
+                android:singleLine="true"
+                android:layout_marginStart="3dp"
+                android:text="Autor"
+                android:gravity="bottom"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="150dp" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:textStyle="bold"
+                android:textColor="@color/darkBlue"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="Titulo"
+                android:textSize="17sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@id/imageNew" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_below="@+id/title"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="5dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="Descripcion"/>
+
+            <TextView
+                android:id="@+id/source"
+                android:layout_marginTop="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="12dp"
+                android:layout_below="@+id/description"
+                android:fontFamily="sans-serif-light"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:drawablePadding="10dp"
+                android:text="Source" />
+
+            <ImageView
+                android:id="@+id/date"
+                android:src="@drawable/ic_date"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_below="@+id/description"
+                android:layout_toEndOf="@+id/source"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"/>
+
+            <TextView
+                android:id="@+id/published"
+                android:layout_marginTop="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_below="@+id/description"
+                android:layout_toEndOf="@+id/date"
+                android:textColor="@color/grey"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="01 Enero 2019" />
+
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
