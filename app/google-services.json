@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "282639358225-8aqmf1djtm81bvttad0efseldnrf23f8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.josue.trendnews",
+            "certificate_hash": "290f0063a1a94c93bbd2d4f32bd44ae32896941b"
+          }
+        },
+        {
           "client_id": "282639358225-jqblaqallo675mkvhtavfem91k0j2eam.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

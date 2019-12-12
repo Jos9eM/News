@@ -3,7 +3,8 @@
 
     <string name="apiKey">18434d8a06324694abbfb28c794292d1</string>
     <string name="urlBase">https://newsapi.org/v2/</string>
-
+    <string name="facebook_app_id">484498289113947</string>
+    <string name="fb_login_protocol_scheme">fb484498289113947</string>
 
     <string name="email">Ingrese email</string>
     <string name="password">password</string>
@@ -19,6 +20,10 @@
     <string name="settings">Config.</string>
     <string name="close">Cerrar Sesion</string>
     <string name="top">Top HeadLines</string>
+
+    <string name="auth_fail">No fue posible autentificar... Intente Nuevamente</string>
+    <string name="salirApp">Esta Seguro que desea Salir de la Aplicación?</string>
+
 
 
 </resources>

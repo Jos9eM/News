@@ -79,7 +79,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:background="@drawable/bt_bg"
-        android:textColor="@color/loginDetailsMed" />
+        android:textColor="@color/loginDetails"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/register"
@@ -127,11 +128,12 @@
             android:background="@color/loginDetailsMed" />
     </LinearLayout>
 
-    <TextView
+    <com.facebook.login.widget.LoginButton
         android:id="@+id/face"
-        android:text="@string/face"
+        android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/bt_bg"
         android:drawableStart="@drawable/ic_face"
         android:drawablePadding="8dp"
         android:textColor="@color/loginDetails"

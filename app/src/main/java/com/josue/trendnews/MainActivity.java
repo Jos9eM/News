@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +25,7 @@ import com.josue.trendnews.api.NewsInterface;
 import com.josue.trendnews.models.Article;
 import com.josue.trendnews.models.News;
 import com.josue.trendnews.utils.Utils;
+import com.josue.trendnews.views.NewsDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,6 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-   // private final String API_KEY = getResources().getString(R.string.apiKey);
     private static final String API_KEY = "18434d8a06324694abbfb28c794292d1";
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -90,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     adapter = new NewsAdapter(articles, MainActivity.this);
                     recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
+
+                    initListener();
 
                     refreshLayout.setRefreshing(false);
 
@@ -154,6 +157,51 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void run() {
                 loadJson(keyword);
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        alertDialog.setTitle("Salir");
+        alertDialog.setMessage(getString(R.string.salirApp));
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancelar",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss(); }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                        homeIntent.addCategory( Intent.CATEGORY_HOME );
+                        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        finish();
+                        startActivity(homeIntent);  }
+                });
+        alertDialog.show();
+    }
+
+    private void initListener() {
+        adapter.setOnItemClickListener(new NewsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(MainActivity.this, NewsDetail.class);
+
+                Article article = articles.get(position);
+                intent.putExtra("url", article.getUrl());
+                intent.putExtra("title", article.getTitle());
+                intent.putExtra("img", article.getUrlToImage());
+                intent.putExtra("date", article.getPublishedAt());
+                intent.putExtra("source", article.getSource().getName());
+                intent.putExtra("author", article.getAuthor());
+
+                startActivity(intent);
+
             }
         });
     }
