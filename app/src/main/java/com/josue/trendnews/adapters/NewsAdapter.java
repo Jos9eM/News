@@ -59,7 +59,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.myViewHolder> 
         requestOptions.error(Utils.getRandomDrawbleColor());
         requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
         requestOptions.centerCrop();
-        //requestOptions.timeout(timeout);
 
         Glide.with(contex).load(article.getUrlToImage()).apply(requestOptions).
                 listener(new RequestListener<Drawable>() {

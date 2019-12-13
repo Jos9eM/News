@@ -1,12 +1,15 @@
 package com.josue.trendnews;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,15 +19,29 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import android.widget.ToggleButton;
+
+import com.facebook.login.LoginManager;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.auth.FirebaseAuth;
+import com.josue.trendnews.adapters.CategoryAdapter;
+import com.josue.trendnews.adapters.CountryAdapter;
 import com.josue.trendnews.adapters.NewsAdapter;
 import com.josue.trendnews.api.Client;
 import com.josue.trendnews.api.NewsInterface;
 import com.josue.trendnews.models.Article;
+import com.josue.trendnews.models.Item;
 import com.josue.trendnews.models.News;
+import com.josue.trendnews.utils.Dialogo;
 import com.josue.trendnews.utils.Utils;
+import com.josue.trendnews.views.Login;
 import com.josue.trendnews.views.NewsDetail;
 
 import java.util.ArrayList;
@@ -44,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private NewsAdapter adapter;
     private String TAG = MainActivity.class.getSimpleName();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setNestedScrollingEnabled(false);
         topHead = findViewById(R.id.head);
-
         loadingRefresh("");
     }
 
@@ -148,6 +165,19 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.close:
+                endSesion();
+                return true;
+            case R.id.country:
+                new Dialogo(MainActivity.this);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onRefresh() {
         loadJson("");
     }
@@ -190,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         adapter.setOnItemClickListener(new NewsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+
                 Intent intent = new Intent(MainActivity.this, NewsDetail.class);
 
                 Article article = articles.get(position);
@@ -205,4 +236,39 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             }
         });
     }
+
+    private void fillList(){
+
+        String[] countrysCode = {"ae" , "ar", "at" , "au", "be" , "bg", "br" , "ca", "ch" , "cn",
+                "co" , "cz", "de" , "eg", "fr" , "gb", "gr" , "hk", "hu" , "id", "ie" , "il",
+                "in" , "it", "jp" , "kr", "lt" , "lv", "ma" , "mx", "my" , "ng", "nl" , "no",
+                "nz" , "ph", "pl" , "pt", "ro" , "rs", "ru" , "sa", "se" , "sg", "si" , "sk",
+                "th" , "tr", "tw" , "ua", "us" , "ve", "za"};
+
+        String[] categorysName = {"Todos" , "Entretenimiento", "General", "Salud", "Ciencia",
+                "Deportes", "Tecnologia" };
+
+        String[] categoysCode = {"", "entertainment", "general", "health", "science",
+                "sports", "technology" };
+
+        int[] caterogyImg = {R.mipmap.todas, R.mipmap.entertainment, R.mipmap.general,
+                R.mipmap.health, R.mipmap.science, R.mipmap.sports, R.mipmap.technology };
+
+        List <Item> categorias = new ArrayList<>();
+
+        for (int i = 0 ; i < categorysName.length ; i++){
+            Item categoria = new Item(categorysName[i], caterogyImg[i]);
+            categorias.add(categoria); }
+
+    }
+
+    private void endSesion(){
+        FirebaseAuth.getInstance().signOut();
+        if (LoginManager.getInstance() != null){
+            LoginManager.getInstance().logOut(); }
+        Intent intent = new Intent(this, Login.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);      }
+
 }

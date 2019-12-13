@@ -1,16 +1,21 @@
 package com.josue.trendnews.views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
@@ -28,7 +33,7 @@ public class NewsDetail extends AppCompatActivity implements AppBarLayout.OnOffs
     private LinearLayout tittleAppBar;
     private AppBarLayout appBarLayout;
     private Toolbar toolbar;
-    private String mUrl, mImg, mTitle, mDate, mSource, mAuthor, mContent;
+    private String mUrl, mImg, mTitle, mDate, mSource, mAuthor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +127,47 @@ public class NewsDetail extends AppCompatActivity implements AppBarLayout.OnOffs
             tittleAppBar.setVisibility(View.GONE);
             isHideToolBar = !isHideToolBar;
         }
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_news, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.share:
+                shareNews();
+                return true;
+            case R.id.viewWeb:
+                openBrowser();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void openBrowser(){
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(mUrl));
+        startActivity(intent);
+    }
+
+    private void shareNews(){
+        try {
+            String textToShare = mUrl;
+
+            Intent mySharingIntent = new Intent(Intent.ACTION_SEND);
+            mySharingIntent.setType("text/html");
+            mySharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Ve esta Noticia: ");
+            mySharingIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
+            Intent shareIntent = Intent.createChooser(mySharingIntent, "Share vía");
+            startActivity(shareIntent);
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(),
+                    "No fue posible Compartir la Noticia", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -18,7 +18,9 @@
 
     <string name="search">Buscar</string>
     <string name="settings">Config.</string>
+    <string name="share">Share</string>
     <string name="close">Cerrar Sesion</string>
+    <string name="view">Abrir en Navegador</string>
     <string name="top">Top HeadLines</string>
 
     <string name="auth_fail">No fue posible autentificar... Intente Nuevamente</string>
