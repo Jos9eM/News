@@ -2,44 +2,37 @@ package com.josue.trendnews;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.widget.ContentLoadingProgressBar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
-
-import android.widget.ToggleButton;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
-import com.josue.trendnews.adapters.CategoryAdapter;
-import com.josue.trendnews.adapters.CountryAdapter;
 import com.josue.trendnews.adapters.NewsAdapter;
 import com.josue.trendnews.api.Client;
 import com.josue.trendnews.api.NewsInterface;
 import com.josue.trendnews.models.Article;
 import com.josue.trendnews.models.Item;
 import com.josue.trendnews.models.News;
-import com.josue.trendnews.utils.Dialogo;
+import com.josue.trendnews.utils.DialogoCategoria;
+import com.josue.trendnews.utils.DialogoPais;
 import com.josue.trendnews.utils.Utils;
 import com.josue.trendnews.views.Login;
 import com.josue.trendnews.views.NewsDetail;
@@ -50,7 +43,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener,
+        DialogoCategoria.CategoryDialogListener, DialogoPais.CountryDialogListener {
 
     private static final String API_KEY = "18434d8a06324694abbfb28c794292d1";
     private RecyclerView recyclerView;
@@ -60,6 +54,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private List<Article> articles = new ArrayList<>();
     private NewsAdapter adapter;
     private String TAG = MainActivity.class.getSimpleName();
+    private String categoria = "", pais = Utils.getCountry();
+    DialogoPais dialogoPais = new DialogoPais();
+    private Menu menu;
+    DialogoCategoria dialogoCategoria = new DialogoCategoria();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,12 +76,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         loadingRefresh("");
     }
 
-    public void loadJson (final String keyword){
+    public void loadJson (final String keyword, final String country, final String category){
 
         refreshLayout.setRefreshing(true);
 
         NewsInterface newsInterface = Client.getApi().create(NewsInterface.class);
-        String country = Utils.getCountry();
         String language = Utils.getLanguage();
 
         Call<News> call;
@@ -92,8 +89,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             call = newsInterface.getNewsSearch(keyword, language, "publishedAt", API_KEY);
             topHead.setVisibility(View.INVISIBLE);
         } else {
-            call = newsInterface.getNews(country, API_KEY);
-            topHead.setVisibility(View.VISIBLE);}
+            call = newsInterface.getNews(country, category,  API_KEY);
+            topHead.setVisibility(View.VISIBLE); }
 
         call.enqueue(new Callback<News>() {
             @Override
@@ -136,6 +133,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
+        this.menu = menu;
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
 
@@ -152,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     loadingRefresh(query);  }
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 return false;
@@ -170,22 +168,34 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 endSesion();
                 return true;
             case R.id.country:
-                new Dialogo(MainActivity.this);
+                openCountrys();
+                return true;
+            case R.id.filter:
+                openCategorys();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void openCategorys() {
+        dialogoCategoria.show(getSupportFragmentManager(), "Dialogo Categorias");
+    }
+
+    private void openCountrys() {
+        dialogoPais.show(getSupportFragmentManager(), "Dialogo Paises");
+    }
+
     @Override
     public void onRefresh() {
-        loadJson("");
+        loadJson("", pais, categoria);
     }
 
     public void loadingRefresh(final String keyword){
         refreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                loadJson(keyword);
+                loadJson(keyword, pais, categoria);
             }
         });
     }
@@ -231,34 +241,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 intent.putExtra("author", article.getAuthor());
 
                 startActivity(intent);
-
             }
         });
-    }
-
-    private void fillList(){
-
-        String[] countrysCode = {"ae" , "ar", "at" , "au", "be" , "bg", "br" , "ca", "ch" , "cn",
-                "co" , "cz", "de" , "eg", "fr" , "gb", "gr" , "hk", "hu" , "id", "ie" , "il",
-                "in" , "it", "jp" , "kr", "lt" , "lv", "ma" , "mx", "my" , "ng", "nl" , "no",
-                "nz" , "ph", "pl" , "pt", "ro" , "rs", "ru" , "sa", "se" , "sg", "si" , "sk",
-                "th" , "tr", "tw" , "ua", "us" , "ve", "za"};
-
-        String[] categorysName = {"Todos" , "Entretenimiento", "General", "Salud", "Ciencia",
-                "Deportes", "Tecnologia" };
-
-        String[] categoysCode = {"", "entertainment", "general", "health", "science",
-                "sports", "technology" };
-
-        int[] caterogyImg = {R.mipmap.todas, R.mipmap.entertainment, R.mipmap.general,
-                R.mipmap.health, R.mipmap.science, R.mipmap.sports, R.mipmap.technology };
-
-        List <Item> categorias = new ArrayList<>();
-
-        for (int i = 0 ; i < categorysName.length ; i++){
-            Item categoria = new Item(categorysName[i], caterogyImg[i]);
-            categorias.add(categoria); }
-
     }
 
     private void endSesion(){
@@ -270,4 +254,20 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);      }
 
+    @Override
+    public void applyCategory(String category, String code, int image) {
+        categoria = code;
+        Toast.makeText(getApplicationContext(), "Noticias de: " + category, Toast.LENGTH_SHORT).show();
+        dialogoCategoria.dismiss();
+        loadJson("", pais, categoria);
+    }
+
+    @Override
+    public void applyCountry(String country, String code, int image) {
+        pais = code;
+        Toast.makeText(getApplicationContext(), "Noticias en: " + country, Toast.LENGTH_SHORT).show();
+        dialogoPais.dismiss();
+        loadJson("", pais, categoria);
+        menu.getItem(2).setIcon(ContextCompat.getDrawable(this, image));
+    }
 }
