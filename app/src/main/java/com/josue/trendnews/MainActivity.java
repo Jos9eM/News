@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private NewsAdapter adapter;
     private String TAG = MainActivity.class.getSimpleName();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
